@@ -176,6 +176,45 @@ body {
 }
 
 /* Quiz */
+.quiz-screen-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.5rem 0 0.75rem;
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+  margin: -1rem -1.25rem 1rem -1.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.btn-home-from-quiz {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-home-from-quiz:hover,
+.btn-home-from-quiz:focus {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-home-from-quiz:active {
+  transform: scale(0.98);
+}
+
 .quiz-meta {
   display: flex;
   flex-wrap: wrap;

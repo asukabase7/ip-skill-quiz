@@ -15,7 +15,7 @@ DB_PATH = os.path.join(BASE_DIR, "quiz.db")
 
 
 def ensure_tables(conn):
-    """questions と history（復習用）テーブルが無ければ作成する。"""
+    """questions と history（復習用・間違えた問題を保存するテーブル）が無ければ作成する。"""
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS questions (

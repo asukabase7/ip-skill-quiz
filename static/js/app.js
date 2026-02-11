@@ -26,6 +26,7 @@
   const chartContainer = document.getElementById("chart-container");
   const statsChartEl = document.getElementById("statsChart");
   const comboDisplay = document.getElementById("combo-display");
+  const btnHomeFromQuiz = document.getElementById("btn-home-from-quiz");
   const btnRetry = document.getElementById("btn-retry");
 
   const LABELS = { option_a: "ア", option_b: "イ", option_c: "ウ", option_d: "エ" };
@@ -338,6 +339,18 @@
   });
 
   btnNext.addEventListener("click", nextQuestion);
+
+  btnHomeFromQuiz.addEventListener("click", function () {
+    if (!confirm("クイズを中断してホームに戻りますか？")) return;
+    currentList = [];
+    currentIndex = 0;
+    correctCount = 0;
+    sessionResults = [];
+    streakCount = 0;
+    showScreen(startScreen);
+    updateReviewButtonVisibility();
+  });
+
   btnRetry.addEventListener("click", function () {
     if (statsChartInstance) {
       statsChartInstance.destroy();
