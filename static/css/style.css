@@ -1,0 +1,428 @@
+/* 知的財産管理技能検定2級 一問一答 - Mobile First */
+
+:root {
+  --bg: #f0f4f8;
+  --surface: #fff;
+  --primary: #2c5282;
+  --primary-hover: #1a365d;
+  --secondary: #4a5568;
+  --correct: #276749;
+  --wrong: #c53030;
+  --border: #e2e8f0;
+  --text: #1a202c;
+  --text-muted: #718096;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --touch-min: 44px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+/* Header */
+.header {
+  background: var(--primary);
+  color: #fff;
+  padding: 1rem 1.25rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 1rem 1.25rem 1.5rem;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+
+/* Screens */
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* Start */
+.start-actions {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0.875rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  min-height: var(--touch-min);
+  transition: background 0.2s, transform 0.05s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: #2d3748;
+}
+
+/* 過去問 / AI模擬 の2ボタン横並び・等幅 */
+.btn-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.5rem auto 0;
+}
+
+.btn-row .btn {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.filter-label {
+  align-self: stretch;
+  margin: 1rem 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.filters {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  min-height: var(--touch-min);
+}
+
+/* Quiz */
+.quiz-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.exam-type-badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background: #553c9a;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.category {
+  font-size: 0.8125rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--border);
+  border-radius: 6px;
+  color: var(--secondary);
+}
+
+.scenario-box {
+  background: #edf2f7;
+  border-left: 4px solid var(--primary);
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.9375rem;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.question-text {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  padding: 1rem 1rem;
+  text-align: left;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  min-height: var(--touch-min);
+  transition: border-color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.option:hover,
+.option:focus {
+  border-color: var(--primary);
+  background: #ebf8ff;
+}
+
+.option:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.option.correct {
+  border-color: var(--correct);
+  background: #c6f6d5;
+}
+
+.option.wrong {
+  border-color: var(--wrong);
+  background: #fed7d7;
+}
+
+.option-label {
+  font-weight: 700;
+  margin-right: 0.25em;
+}
+
+.result-area {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+/* 連続正解コンボ表示 */
+.combo-display {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  animation: combo-pop 0.35s ease-out;
+}
+
+@keyframes combo-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.combo-display.combo-2 { font-size: 1.125rem; color: var(--correct); }
+.combo-display.combo-3 { font-size: 1.25rem; color: var(--correct); }
+.combo-display.combo-4 { font-size: 1.375rem; color: #2b6cb0; }
+.combo-display.combo-5 { font-size: 1.5rem; color: #2b6cb0; }
+.combo-display.combo-6 { font-size: 1.625rem; color: #805ad5; }
+.combo-display.combo-7 { font-size: 1.75rem; color: #805ad5; }
+.combo-display.combo-8 { font-size: 1.875rem; color: #c05621; }
+.combo-display.combo-9 { font-size: 2rem; color: #c05621; }
+.combo-display.combo-10 { font-size: 2.125rem; color: #c53030; font-weight: 800; }
+
+.result-message {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.result-message.correct {
+  color: var(--correct);
+}
+
+.result-message.wrong {
+  color: var(--wrong);
+}
+
+.explanation {
+  margin: 0 0 1rem;
+  padding: 0.875rem;
+  background: #edf2f7;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+/* Result summary */
+.result-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.result-title-badge {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+}
+
+.result-title-badge.title-god {
+  background: linear-gradient(135deg, #f6e05e 0%, #d69e2e 100%);
+  color: #744210;
+}
+
+.result-title-badge.title-expert {
+  background: linear-gradient(135deg, #90cdf4 0%, var(--primary) 100%);
+  color: #fff;
+}
+
+.result-title-badge.title-egg {
+  background: linear-gradient(135deg, #c6f6d5 0%, var(--correct) 100%);
+  color: #22543d;
+}
+
+.score-summary {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+/* レーダーチャート（苦手分野の視覚化） */
+.chart-container {
+  width: 100%;
+  max-width: 320px;
+  height: 280px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* スマートフォン: コンボ・チャートがはみ出さないように */
+@media (max-width: 380px) {
+  .combo-display.combo-10 { font-size: 1.75rem; }
+  .combo-display.combo-9 { font-size: 1.625rem; }
+  .chart-container {
+    height: 240px;
+    max-width: 100%;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 600px) {
+  .header {
+    padding: 1.25rem 2rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .main {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .filters {
+    flex-direction: row;
+  }
+
+  .select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .question-text {
+    font-size: 1.0625rem;
+  }
+
+  .option {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .chart-container {
+    max-width: 360px;
+    height: 300px;
+  }
+}

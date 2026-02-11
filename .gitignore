@@ -1,0 +1,28 @@
+# データベース（本番ではサーバーで別途作成）
+quiz.db
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.venv/
+venv/
+env/
+
+# 環境・秘密
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ログ・一時
+*.log
+*.tmp
+
+# 大きなPDF（必要なら .gitignore からこの行を削除）
+knowledge/
