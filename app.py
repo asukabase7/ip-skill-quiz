@@ -6,12 +6,30 @@ PythonAnywhere 等の WSGI 環境でも動作するよう、絶対パスとテ�
 """
 import os
 import sqlite3
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "ip-quiz-dev-secret-change-in-production")
 # サーバー上のどこから実行されても同じ DB を指す絶対パス
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "quiz.db")
+
+# 連続正解数に応じた称号（コンボ → 称号名）
+COMBO_TITLES = [
+    (50, "知財の神"),
+    (30, "弁理士レベル"),
+    (20, "歩く知的財産権法"),
+    (10, "特許庁の注目株"),
+    (5, "駆け出し知財担当"),
+]
+
+
+def get_title_for_combo(combo):
+    """現在のコンボ数に応じた称号を返す。"""
+    for threshold, title in COMBO_TITLES:
+        if combo >= threshold:
+            return title
+    return None
 
 
 def ensure_tables(conn):
@@ -158,8 +176,10 @@ def api_record():
 
 @app.route("/api/check/<int:question_id>")
 def api_check(question_id):
-    """正解のみ返す（採点用）。"""
+    """正解判定。session で連続正解数（コンボ）を管理し、combo と title をレスポンスに含める。"""
     selected = request.args.get("answer")
+    combo = session.get("combo", 0)
+    is_correct = False
     conn = None
     try:
         conn = get_db()
@@ -171,14 +191,71 @@ def api_check(question_id):
         if not row:
             return jsonify({"error": "not_found"}), 404
         correct = row["correct_answer"]
+        is_correct = selected == correct
+        if is_correct:
+            combo = combo + 1
+            session["combo"] = combo
+        else:
+            session["combo"] = 0
+            combo = 0
+        title = get_title_for_combo(combo)
         return jsonify({
             "correct_answer": correct,
             "explanation": row["explanation"],
-            "is_correct": selected == correct,
+            "is_correct": is_correct,
+            "combo": combo,
+            "title": title,
         })
     except sqlite3.Error as e:
         app.logger.exception("api_check: %s", e)
         return jsonify({"error": "database_error", "message": "判定に失敗しました。"}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.route("/api/quiz/start", methods=["POST"])
+def api_quiz_start():
+    """クイズ開始時にセッションのコンボを 0 にリセットする。"""
+    session["combo"] = 0
+    return jsonify({"ok": True})
+
+
+@app.route("/dashboard")
+def dashboard():
+    """成績分析（ダッシュボード）ページ。"""
+    return render_template("dashboard.html")
+
+
+@app.route("/api/dashboard/stats")
+def api_dashboard_stats():
+    """history と questions を結合し、カテゴリごとの正解率を返す。レーダーチャート用。"""
+    conn = None
+    try:
+        conn = get_db()
+        cur = conn.execute(
+            """
+            SELECT q.category,
+                   COUNT(*) AS total,
+                   SUM(CASE WHEN h.is_correct = 1 THEN 1 ELSE 0 END) AS correct
+            FROM history h
+            JOIN questions q ON q.id = h.question_id
+            GROUP BY q.category
+            HAVING total > 0
+            ORDER BY q.category
+            """
+        )
+        rows = cur.fetchall()
+        labels = []
+        data = []
+        for r in rows:
+            labels.append(r["category"])
+            rate = round(100 * r["correct"] / r["total"]) if r["total"] else 0
+            data.append(rate)
+        return jsonify({"labels": labels, "data": data})
+    except sqlite3.Error as e:
+        app.logger.exception("api_dashboard_stats: %s", e)
+        return jsonify({"error": "database_error", "labels": [], "data": []}), 500
     finally:
         if conn:
             conn.close()

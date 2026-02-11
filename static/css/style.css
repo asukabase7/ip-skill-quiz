@@ -223,6 +223,59 @@ body {
   margin-bottom: 1rem;
 }
 
+.quiz-combo-bar {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--correct);
+  padding: 0.25rem 0.5rem;
+  background: rgba(39, 103, 73, 0.15);
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.quiz-combo-bar--bump {
+  animation: combo-bump 0.4s ease-out;
+}
+
+@keyframes combo-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.title-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  padding: 1.25rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #2c5282 0%, #553c9a 100%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.title-toast--in {
+  opacity: 1;
+  animation: title-toast-in 0.4s ease-out;
+}
+
+.title-toast--out {
+  opacity: 0;
+}
+
+@keyframes title-toast-in {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
 .progress {
   font-size: 0.875rem;
   color: var(--text-muted);
@@ -416,6 +469,30 @@ body {
 .chart-container canvas {
   max-width: 100%;
   max-height: 100%;
+}
+
+/* ダッシュボード */
+.dashboard-actions {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.chart-container--dashboard {
+  max-width: 360px;
+  height: 320px;
+  margin-bottom: 1rem;
+}
+
+.dashboard-note {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 /* スマートフォン: コンボ・チャートがはみ出さないように */

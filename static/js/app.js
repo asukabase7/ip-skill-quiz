@@ -11,6 +11,9 @@
   const btnStartFiltered = document.getElementById("btn-start-filtered");
   const filterExam = document.getElementById("filter-exam");
   const filterCategory = document.getElementById("filter-category");
+  const quizComboBar = document.getElementById("quiz-combo-bar");
+  const quizComboNum = document.getElementById("quiz-combo-num");
+  const titleToast = document.getElementById("title-toast");
   const quizExamTypeBadge = document.getElementById("quiz-exam-type-badge");
   const quizProgress = document.getElementById("quiz-progress");
   const quizCategory = document.getElementById("quiz-category");
@@ -108,6 +111,8 @@
       alert("問題がありません。");
       return;
     }
+    fetch("/api/quiz/start", { method: "POST" }).catch(function () {});
+    quizComboBar.hidden = true;
     showScreen(quizScreen);
     showQuestion();
   }
@@ -117,6 +122,12 @@
     resultArea.hidden = true;
     comboDisplay.hidden = true;
     comboDisplay.className = "combo-display";
+    if (streakCount >= 1) {
+      quizComboNum.textContent = streakCount;
+      quizComboBar.hidden = false;
+    } else {
+      quizComboBar.hidden = true;
+    }
     const q = currentList[currentIndex];
     const num = currentIndex + 1;
     const total = currentList.length;
@@ -166,12 +177,8 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         const isCorrect = data.is_correct;
-        if (isCorrect) {
-          correctCount++;
-          streakCount++;
-        } else {
-          streakCount = 0;
-        }
+        streakCount = data.combo != null ? data.combo : (isCorrect ? streakCount + 1 : 0);
+        if (isCorrect) correctCount++;
         sessionResults.push({ category: q.category || "その他", isCorrect: isCorrect });
         recordAnswer(q.id, isCorrect);
 
@@ -182,12 +189,34 @@
           else if (ans === selected && !isCorrect) el.classList.add("wrong");
         });
 
+        if (streakCount >= 1) {
+          quizComboNum.textContent = streakCount;
+          quizComboBar.hidden = false;
+          quizComboBar.classList.add("quiz-combo-bar--bump");
+          setTimeout(function () { quizComboBar.classList.remove("quiz-combo-bar--bump"); }, 400);
+        } else {
+          quizComboBar.hidden = true;
+        }
+
         if (streakCount >= 2) {
           comboDisplay.textContent = streakCount + "連勝！\uD83D\uDD25";
           comboDisplay.hidden = false;
           comboDisplay.className = "combo-display combo-" + Math.min(streakCount, 10);
         } else {
           comboDisplay.hidden = true;
+        }
+
+        if (data.title && [5, 10, 20, 30, 50].indexOf(streakCount) !== -1) {
+          titleToast.textContent = "称号獲得！ " + data.title;
+          titleToast.hidden = false;
+          titleToast.classList.remove("title-toast--out");
+          titleToast.offsetHeight;
+          titleToast.classList.add("title-toast--in");
+          setTimeout(function () {
+            titleToast.classList.remove("title-toast--in");
+            titleToast.classList.add("title-toast--out");
+            setTimeout(function () { titleToast.hidden = true; }, 500);
+          }, 2500);
         }
 
         resultArea.hidden = false;
@@ -347,6 +376,8 @@
     correctCount = 0;
     sessionResults = [];
     streakCount = 0;
+    quizComboBar.hidden = true;
+    fetch("/api/quiz/start", { method: "POST" }).catch(function () {});
     showScreen(startScreen);
     updateReviewButtonVisibility();
   });

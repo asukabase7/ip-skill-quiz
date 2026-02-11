@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a365d" />
+  <title>成績分析 - 知財2級 一問一答</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="title">成績分析</h1>
+      <p class="subtitle">カテゴリ別正解率（全回答履歴）</p>
+    </header>
+
+    <main class="main">
+      <div class="dashboard-actions">
+        <a href="/" class="btn btn-secondary">トップへ戻る</a>
+      </div>
+      <div class="chart-container chart-container--dashboard" id="dashboard-chart-wrap">
+        <canvas id="dashboardChart" aria-label="カテゴリ別正解率"></canvas>
+      </div>
+      <p class="dashboard-note" id="dashboard-note">回答履歴がありません。クイズに挑戦するとここに正解率が表示されます。</p>
+    </main>
+  </div>
+  <script>
+(function () {
+  var wrap = document.getElementById("dashboard-chart-wrap");
+  var canvas = document.getElementById("dashboardChart");
+  var note = document.getElementById("dashboard-note");
+
+  fetch("/api/dashboard/stats")
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      var labels = res.labels || [];
+      var data = res.data || [];
+      if (labels.length === 0) {
+        wrap.style.display = "none";
+        note.style.display = "block";
+        return;
+      }
+      note.style.display = "none";
+      wrap.style.display = "block";
+      var ctx = canvas.getContext("2d");
+      new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "正解率（%）",
+            data: data,
+            backgroundColor: "rgba(44, 82, 130, 0.25)",
+            borderColor: "rgba(44, 82, 130, 0.9)",
+            pointBackgroundColor: "rgba(44, 82, 130, 1)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgba(44, 82, 130, 1)",
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 100,
+              ticks: { stepSize: 25 },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+          },
+        },
+      });
+    })
+    .catch(function () {
+      wrap.style.display = "none";
+      note.textContent = "データの取得に失敗しました。";
+      note.style.display = "block";
+    });
+})();
+  </script>
+</body>
+</html>
