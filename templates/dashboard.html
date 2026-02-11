@@ -19,10 +19,10 @@
       <div class="dashboard-actions">
         <a href="/" class="btn btn-secondary">トップへ戻る</a>
       </div>
-      <div class="chart-container chart-container--dashboard" id="dashboard-chart-wrap">
+      <div class="chart-container chart-container--dashboard" id="dashboard-chart-wrap" style="display: none;">
         <canvas id="dashboardChart" aria-label="カテゴリ別正解率"></canvas>
       </div>
-      <p class="dashboard-note" id="dashboard-note">回答履歴がありません。クイズに挑戦するとここに正解率が表示されます。</p>
+      <p class="dashboard-note" id="dashboard-note">まだ回答データがありません</p>
     </main>
   </div>
   <script>
@@ -36,8 +36,10 @@
     .then(function (res) {
       var labels = res.labels || [];
       var data = res.data || [];
-      if (labels.length === 0) {
+      var noData = labels.length === 0 || data.every(function (v) { return v === 0; });
+      if (noData) {
         wrap.style.display = "none";
+        note.textContent = "まだ回答データがありません";
         note.style.display = "block";
         return;
       }
@@ -51,12 +53,12 @@
           datasets: [{
             label: "正解率（%）",
             data: data,
-            backgroundColor: "rgba(44, 82, 130, 0.25)",
-            borderColor: "rgba(44, 82, 130, 0.9)",
-            pointBackgroundColor: "rgba(44, 82, 130, 1)",
+            backgroundColor: "rgba(44, 100, 120, 0.28)",
+            borderColor: "rgba(44, 100, 120, 0.9)",
+            pointBackgroundColor: "rgba(44, 100, 120, 1)",
             pointBorderColor: "#fff",
             pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(44, 82, 130, 1)",
+            pointHoverBorderColor: "rgba(44, 100, 120, 1)",
           }],
         },
         options: {

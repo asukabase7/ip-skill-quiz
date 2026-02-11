@@ -304,6 +304,7 @@
   function nextQuestion() {
     currentIndex++;
     if (currentIndex >= currentList.length) {
+      quizComboBar.hidden = true;
       showScreen(resultScreen);
       var total = currentList.length;
       scoreSummary.textContent = total + " 問中 " + correctCount + " 問正解でした。";
@@ -387,6 +388,7 @@
       statsChartInstance.destroy();
       statsChartInstance = null;
     }
+    quizComboBar.hidden = true;
     showScreen(startScreen);
     updateReviewButtonVisibility();
   });

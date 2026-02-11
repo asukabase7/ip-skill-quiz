@@ -9,7 +9,8 @@ import sqlite3
 from flask import Flask, render_template, jsonify, request, session
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "ip-quiz-dev-secret-change-in-production")
+# セッション利用のため SECRET_KEY を設定（環境変数優先、未設定時はランダム）
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY") or os.urandom(24).hex()
 # サーバー上のどこから実行されても同じ DB を指す絶対パス
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "quiz.db")
