@@ -81,7 +81,7 @@ python app.py
 ### PWA対応
 
 - iPhoneのホーム画面に追加可能（スタンドアロンモード）
-- アイコン: `static/icon.png`（180×180px推奨）
+- アプリアイコン: `static/icon.png`（正方形・180×180px推奨）— ファビコン・ホーム画面アイコンとして表示
 - ブラウザの戻るボタンが無い環境でも「🏠 ホームへ」ボタンでトップに戻れる
 
 ## データ管理
@@ -128,6 +128,7 @@ ip_skill_quiz/
 │   ├── index.html       # メイン画面（SPA）
 │   └── dashboard.html   # 成績分析ダッシュボード
 └── static/
+    ├── icon.png         # アプリアイコン（ファビコン・PWA用）
     ├── css/
     │   └── style.css    # スタイル（Mobile First）
     └── js/
